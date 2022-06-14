@@ -6,7 +6,7 @@
 
 #define WIFI_SSID "SMA"
 #define WIFI_PASSWORD "ipc2320207"
-#define MQTT_HOST IPAddress(192, 168, 1, 10)
+#define MQTT_HOST IPAddress(185,213,2,21) // IP address of MQTT broker
 #define MQTT_PORT 1883
 #define PUMP_PIN 32
 #define LIGHT_PIN 33
@@ -20,7 +20,7 @@ void setup()
 {
     //General setup
     Serial.begin(9600);
-
+    WiFi.mode(WIFI_STA);
     //IO setup
     pinMode(PUMP_PIN, OUTPUT);
     pinMode(LIGHT_PIN, OUTPUT);
@@ -42,14 +42,14 @@ void loop()
 
 void connectToWifi()
 {
-    std::cout << "Connecting to Wi-Fi...";
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-    while (!WiFi.isConnected())
+    std::cout << "Connecting to Wi-Fi...";
+    while (WiFi.status() != WL_CONNECTED)
     {
         std::cout << ".";
-        delay(500);
+        delay(1000);
     }
-    
+    std::cout << "ESP32 IP address: /n" << WiFi.localIP();
 }
 
 void connectToMQTT()
