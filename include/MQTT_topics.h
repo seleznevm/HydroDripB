@@ -1,0 +1,13 @@
+#define topic_espTime "smadripsystem/espTime"
+#define topic_status "smadripsystem/status"
+#define topic_status_pump "smadripsystem/pump"
+#define topic_status_light "smadripsystem/light"
+#define topic_status_compressor "smadripsystem/compressor"
+#define topic_status_waterlevel "smadripsystem/waterlevel"
+#define topic_status_pumpONtime "smadripsystem/pumpONtime"
+// define settings topics:
+#define topic_settings_drip_start_h "smadripsystem/settings/drip_start_h"
+#define topic_settings_drip_stop_h "smadripsystem/settings/drip_stop_h"
+#define topic_settings_lightON_h "smadripsystem/settings/lightON_h"
+#define topic_settings_lightOFF_h "smadripsystem/settings/lightOFF_h"
+#define topic_settings_pumpONtime_m "smadripsystem/settings/pumpONtime_m"
