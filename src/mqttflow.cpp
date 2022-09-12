@@ -5,6 +5,7 @@
 #include <AsyncMqttClient.h>
 #include <iostream>
 #include <DHTesp.h>
+
 using std::cout;
 using std::cin;
 using std::endl;
@@ -15,7 +16,9 @@ AsyncMqttClient mqttClient;
 tm LocalTime();
 extern tm timeinfo;
 extern programm current_set;
-const IPAddress MQTT_HOST = IPAddress(5,196,95,208);
+extern TempAndHumidity environment;
+extern DHTesp dht;
+const IPAddress MQTT_HOST = IPAddress(91,121,93,94);
 const int MQTT_PORT = 1883;
 
 // functions prototypes
@@ -23,7 +26,6 @@ void mqttflow_telemetrySend();
 void mqttPublishDIO(const char*, int);
 int mqttflow_getAppSettings();
 // --------------------
-
 
 void mqttflow_telemetrySend()
 {
@@ -35,11 +37,16 @@ void mqttflow_telemetrySend()
     string time;
     time = time_h + ':' + time_m;
     const char* msg = time.c_str();
+    delay(2000);
+    environment = dht.getTempAndHumidity();
+    string sTemp = to_string(environment.temperature);
     mqttClient.publish(topic_espTime, 0, 1, msg); // send time
     mqttPublishDIO(topic_status_pump, PUMP_PIN); // send pump status
     mqttPublishDIO(topic_status_light, LIGHT_PIN); 
     mqttPublishDIO(topic_status_compressor, COMPRESSOR_PIN); 
     mqttPublishDIO(topic_status_waterlevel, WATER_LEVEL_PIN);
+    msg = sTemp.c_str();
+    mqttClient.publish(topic_status_temperature, 0, 1, msg);
 }
 
 void mqttPublishDIO(const char* topic, int pin)
@@ -52,8 +59,14 @@ void mqttPublishDIO(const char* topic, int pin)
 void connectToMQTT()
 {
     mqttClient.setServer(MQTT_HOST, MQTT_PORT);
-    cout << "Connecting to MQTT..." << endl;
+    cout << "Connecting to MQTT" << endl;
     mqttClient.connect();
+    while (mqttClient.connected() == 0)
+    {
+        cout << ".";
+        delay(1000);
+    }
+    cout << "Connected to MQTT broker" << endl;
 }
 
 /*

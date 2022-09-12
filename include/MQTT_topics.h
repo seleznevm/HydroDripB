@@ -5,6 +5,8 @@
 #define topic_status_compressor "smadripsystem/compressor"
 #define topic_status_waterlevel "smadripsystem/waterlevel"
 #define topic_status_pumpONtime "smadripsystem/pumpONtime"
+#define topic_status_temperature "smadripsystem/environment/temperature"
+#define topic_status_humidity "smadripsystem/environment/humidity"
 // define settings topics:
 #define topic_settings_drip_start_h "smadripsystem/settings/drip_start_h"
 #define topic_settings_drip_stop_h "smadripsystem/settings/drip_stop_h"

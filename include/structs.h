@@ -2,10 +2,10 @@
 
 struct programm
 {
-    uint8_t drip_start_h;
-    uint8_t drip_stop_h;
-    uint8_t lightON_h;
-    uint8_t lightOFF_h;
-    uint8_t pumpONtime_m;
-    uint8_t pumpOFFtime_m;
+    int drip_start_h;
+    int drip_stop_h;
+    int lightON_h;
+    int lightOFF_h;
+    int pumpONtime_m;
+    int pumpOFFtime_m;
 };
