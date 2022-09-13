@@ -13,6 +13,8 @@ using std::cin;
 using std::endl;
 
 hw_timer_s *pump_on_countdown = NULL;
+hw_timer_s *idle_countdown = NULL;
+
 enum statusONOFF {OFF, ON};
 enum EEPROM_enum{start_hour = 2, stop_hour = 4, lightON_hour = 6, lightOFF_hour = 8};
 
@@ -22,12 +24,24 @@ void mqttflow_telemetrySend();
 void mqttPublishDIO(const char*, int);
 void relay_control(int actuator, statusONOFF status);
 void IRAM_ATTR wateringTimeout();
+void IRAM_ATTR idleTimeout();
+void timerSetup();
 // --
 extern tm timeinfo;
 extern tm Localtime();
 extern programm current_set;
 // --
 std::string mode = "initial";
+
+void timerSetup()
+{
+    timerAttachInterrupt(pump_on_countdown, &wateringTimeout, false);
+    timerAlarmWrite(pump_on_countdown, current_set.pumpONtime_m * 60000000, false);
+    pump_on_countdown = timerBegin(0, 80, false);
+    timerAttachInterrupt(idle_countdown, &idleTimeout, false);
+    timerAlarmWrite(idle_countdown, current_set.pumpOFFtime_m * 60000000, false);
+    idle_countdown = timerBegin(1, 80, false);
+}
 
 int watering()
 {
@@ -37,9 +51,6 @@ int watering()
         if ((mode != "watering") && (mode != "idle")) // check the current mode
         {
             relay_control(PUMP_PIN, ON);
-            pump_on_countdown = timerBegin(0, 80, false);
-            timerAttachInterrupt(pump_on_countdown, &wateringTimeout, false);
-            timerAlarmWrite(pump_on_countdown, current_set.pumpONtime_m * 60000000, false);
         }
     }
     return 0;
@@ -49,6 +60,14 @@ void IRAM_ATTR wateringTimeout()
 {
     relay_control(PUMP_PIN, OFF);
     mode = "idle";
+    timerAlarmEnable(idle_countdown);
+}
+
+void IRAM_ATTR idleTimeout()
+{
+    relay_control(PUMP_PIN, ON);
+    mode = "watering";
+    timerAlarmEnable(pump_on_countdown);
 }
 
 void relay_control(int actuator, statusONOFF status)
