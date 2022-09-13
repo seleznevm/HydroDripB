@@ -38,23 +38,31 @@ int mqttflow_getAppSettings();
 void displayInitialInfo(TempAndHumidity &environment);
 int watering();
 //
-tm LocalTime();
-struct tm timeinfo;
 programm current_set;
 programm default_set 
     {
         .drip_start_h = 7,
-        .drip_stop_h = 20,
+        .drip_stop_h = 24,
         .lightON_h = 6,
         .lightOFF_h = 22,
         .pumpONtime_m = 1,
-        .pumpOFFtime_m = 30
+        .pumpOFFtime_m = 1
     };
 Adafruit_SSD1306 display(128, 32, &Wire, -1);
+struct tm timeinfo;
 
 using std::cout;
 using std::cin;
 using std::endl;
+
+tm LocalTime()
+{
+    if (!getLocalTime(&timeinfo))
+    {
+        cout << "Failed to obtain a time\n";
+    }
+    return timeinfo;
+}
 
 void setup()
 {
@@ -119,15 +127,6 @@ void connectToWifi()
     cout << "CONNECTED\n"
          << "ESP32 IP address: " << endl;
     Serial.println(WiFi.localIP());
-}
-
-tm LocalTime()
-{
-    if (!getLocalTime(&timeinfo))
-    {
-        cout << "Failed to obtain a time\n";
-    }
-    return timeinfo;
 }
 
 /*

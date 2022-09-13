@@ -28,7 +28,7 @@ void IRAM_ATTR idleTimeout();
 void timerSetup();
 // --
 extern tm timeinfo;
-extern tm Localtime();
+extern tm LocalTime();
 extern programm current_set;
 // --
 std::string mode = "initial";
@@ -45,12 +45,14 @@ void timerSetup()
 
 int watering()
 {
-    Localtime();
+    LocalTime();
     if ((timeinfo.tm_hour >= current_set.drip_start_h) && (timeinfo.tm_hour <= current_set.drip_stop_h)) // check that the current time is in the work period 
     {
+        cout << "\n If mode not watering or idle\n";
         if ((mode != "watering") && (mode != "idle")) // check the current mode
         {
             relay_control(PUMP_PIN, ON);
+            timerAlarmEnable(pump_on_countdown);
         }
     }
     return 0;

@@ -31,7 +31,7 @@ void displayInitialInfo(TempAndHumidity &environment)
 {
     display.clearDisplay();
     display.setCursor(1, 2); display.println("Mode: ");
-    display.setCursor(14, 2); display.println(mode.c_str());
+    display.setCursor(30, 2); display.println(mode.c_str());
     display.setCursor(1, 15); display.println("Current temp:");
     display.setCursor(80, 15); display.print(environment.temperature);
     display.display();
