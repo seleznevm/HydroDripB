@@ -47,6 +47,8 @@ void mqttflow_telemetrySend()
     mqttPublishDIO(topic_status_waterlevel, WATER_LEVEL_PIN);
     msg = sTemp.c_str();
     mqttClient.publish(topic_status_temperature, 0, 1, msg);
+    // mqttClient.publish(topic_status_wateringTimeour, 0, 1, msg);
+    // mqttClient.publish(topic_status_idleTimeout, 0, 1, msg);
 }
 
 void mqttPublishDIO(const char* topic, int pin)

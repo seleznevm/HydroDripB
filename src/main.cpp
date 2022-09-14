@@ -37,6 +37,7 @@ void setupDisplay();
 int mqttflow_getAppSettings();
 void displayInitialInfo(TempAndHumidity &environment);
 int watering();
+void timerSetup();
 //
 programm current_set;
 programm default_set 
@@ -101,11 +102,11 @@ void setup()
     cout << "Lighting ON at: " << (int)current_set.lightON_h << endl;
     cout << "Turn lighting OFF at: " << (int)current_set.lightOFF_h << endl;
     cout << "Turn pump every " << (int)current_set.pumpONtime_m << endl << endl;
-    delay(2000);
     environment = dht.getTempAndHumidity();
     cout << "Temperature: " << environment.temperature << endl
          << "Humidity: " << environment.humidity << endl << endl;
     displayInitialInfo(environment);
+    timerSetup();
 }
 
 void loop()
@@ -113,6 +114,7 @@ void loop()
     mqttflow_telemetrySend();
     watering();
     displayInitialInfo(environment);
+    delay(1000);
 }
 
 void connectToWifi()

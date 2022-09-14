@@ -7,6 +7,8 @@
 #define topic_status_pumpONtime "smadripsystem/pumpONtime"
 #define topic_status_temperature "smadripsystem/environment/temperature"
 #define topic_status_humidity "smadripsystem/environment/humidity"
+#define topic_status_wateringTimeour "smadripsystem/wateringTimeour"
+#define topic_status_idleTimeout "smadripsystem/idleTimeout"
 // define settings topics:
 #define topic_settings_drip_start_h "smadripsystem/settings/drip_start_h"
 #define topic_settings_drip_stop_h "smadripsystem/settings/drip_stop_h"
