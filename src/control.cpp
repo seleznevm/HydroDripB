@@ -28,6 +28,7 @@ void IRAM_ATTR idleTimeout();
 void timerSetup();
 int showWateringCountdown();
 int showIdleCountdown();
+void lightControl();
 // --
 extern tm timeinfo;
 extern tm LocalTime();
@@ -57,7 +58,6 @@ void timerSetup()
 
 int watering()
 {
-    LocalTime();
     if ((timeinfo.tm_hour >= current_set.drip_start_h) && (timeinfo.tm_hour <= current_set.drip_stop_h)) // check that the current time is in the work period 
     {
         if (mode != "watering" && mode != "idle")
@@ -65,8 +65,8 @@ int watering()
             relay_control(PUMP_PIN, ON);
         }
     }
-    cout << "\nWatering timeout: " << timerReadSeconds(watering_countdown) << endl;
-    cout << "Idle timeout: " << timerReadSeconds(idle_countdown) << endl;
+    //cout << "\nWatering timeout: " << timerReadSeconds(watering_countdown) << endl;
+    //cout << "Idle timeout: " << timerReadSeconds(idle_countdown) << endl;
     return 0;
 }
 
@@ -118,6 +118,18 @@ void relay_control(int actuator, statusONOFF status)
     {
         digitalWrite(actuator, LOW);
     }
+}
+
+void lightControl()
+{
+    if ((timeinfo.tm_hour >= current_set.lightON_h) && (digitalRead(LIGHT_PIN) != ON))
+        {
+            relay_control(LIGHT_PIN, ON);
+        }
+    else if ((timeinfo.tm_hour > current_set.lightOFF_h) && (digitalRead(LIGHT_PIN) == ON))
+        {
+            relay_control(LIGHT_PIN, OFF);
+        }
 }
 
 int showWateringCountdown()
