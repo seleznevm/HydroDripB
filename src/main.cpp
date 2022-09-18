@@ -106,7 +106,6 @@ void setup()
     environment = dht.getTempAndHumidity();
     cout << "Temperature: " << environment.temperature << endl
          << "Humidity: " << environment.humidity << endl << endl;
-    displayInitialInfo(environment);
     timerSetup();
 }
 
@@ -115,7 +114,6 @@ void loop()
     mqttflow_telemetrySend();
     watering();
     displayInitialInfo(environment);
-    delay(1000);
 }
 
 void connectToWifi()

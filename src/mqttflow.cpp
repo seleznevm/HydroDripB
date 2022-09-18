@@ -37,7 +37,7 @@ void mqttflow_telemetrySend()
     string time;
     time = time_h + ':' + time_m;
     const char* msg = time.c_str();
-    delay(2000);
+    delay(500);
     environment = dht.getTempAndHumidity();
     string sTemp = to_string(environment.temperature);
     mqttClient.publish(topic_espTime, 0, 1, msg); // send time
