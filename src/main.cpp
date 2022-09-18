@@ -17,9 +17,10 @@
 DHTesp dht;
 enum statusONOFF {OFF, ON};
 enum EEPROM_enum{start_hour = 2, stop_hour = 4, lightON_hour = 6, lightOFF_hour = 8};
-
-const char* WIFI_SSID = "MiKate2";
-const char* WIFI_PASSWORD = "yaslujukate";
+const char* WIFI_SSID = "SMA";
+const char* WIFI_PASSWORD = "ipc2320207";
+// const char* WIFI_SSID = "MiKate2";
+// const char* WIFI_PASSWORD = "yaslujukate";
 const char* ntpServer = "pool.ntp.org";
 const long gmtOffset_sec = 10800;
 const int daylightOffset_sec = 0;
@@ -71,11 +72,11 @@ void setup()
     Serial.begin(9600);
     WiFi.mode(WIFI_STA);
     mqttReconnectTimer = xTimerCreate("mqttTimer", pdMS_TO_TICKS(2000), pdFALSE, (void*)0, reinterpret_cast<TimerCallbackFunction_t>(connectToMQTT));
-    wifiReconnectTimer = xTimerCreate("wifiTimer", pdMS_TO_TICKS(2000), pdFALSE, (void*)0, reinterpret_cast<TimerCallbackFunction_t>(connectToWifi));
+    wifiReconnectTimer = xTimerCreate("wifiTimer", pdMS_TO_TICKS(2000), pdFALSE, (void*)1, reinterpret_cast<TimerCallbackFunction_t>(connectToWifi));
     // -- IO setup
     pinMode(PUMP_PIN, OUTPUT);
     pinMode(LIGHT_PIN, OUTPUT);
-    pinMode(WATER_LEVEL_PIN, INPUT_PULLDOWN);
+    pinMode(WATER_LEVEL_PIN, INPUT_PULLUP);
     pinMode(COMPRESSOR_PIN, OUTPUT);
     dht.setup(TEMP_PIN, DHTesp::DHT22);
     // -- connection

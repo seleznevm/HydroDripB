@@ -39,10 +39,14 @@ void timerSetup()
     timerAttachInterrupt(watering_countdown, &wateringTimeout, false);
     timerAlarmWrite(watering_countdown, current_set.pumpONtime_m * 60000000, true);
     idle_countdown = timerBegin(2, 80, true);
-    timerAttachInterrupt(idle_countdown, &idleTimeout, true);
+    timerAttachInterrupt(idle_countdown, &idleTimeout, false);
     timerAlarmWrite(idle_countdown, current_set.pumpOFFtime_m * 60000000, true);
+    timerAlarmEnable(idle_countdown);
+    timerAlarmEnable(watering_countdown);
     timerStop(watering_countdown);
     timerStop(idle_countdown);   
+    timerRestart(watering_countdown);
+    timerRestart(idle_countdown);
 }
 
 int watering()
@@ -52,25 +56,31 @@ int watering()
     {
         if ((mode != "watering") && (mode != "idle")) // check the current mode
         {
-            cout << "\n If mode not watering or idle\n";
+            cout << "\n Mode is not watering or idle\n";
+            if (digitalRead(PUMP_PIN) != HIGH);
+            {
             relay_control(PUMP_PIN, ON);
+            }
         }
     }
     cout << "\nWatering timeout: " << timerReadSeconds(watering_countdown) << endl;
-    cout << "\nIdle timeout: " << timerReadSeconds(idle_countdown) << endl;
-    if (mode == "idle") 
-    timerAlarmEnable(idle_countdown);
+    cout << "Idle timeout: " << timerReadSeconds(idle_countdown) << endl;
     return 0;
 }
 
 void IRAM_ATTR wateringTimeout()
 {
+    timerStop(watering_countdown);
+    timerRestart(watering_countdown);
     relay_control(PUMP_PIN, OFF);
     mode = "idle";
+    timerStart(idle_countdown);
 }
 
 void IRAM_ATTR idleTimeout()
 {
+    timerStop(idle_countdown);
+    timerRestart(idle_countdown);
     relay_control(PUMP_PIN, ON);
     mode = "watering";
 }
@@ -81,13 +91,13 @@ void relay_control(int actuator, statusONOFF status)
     {
         if (actuator == PUMP_PIN) // part of code for PUMP
         {
-            if (digitalRead(WATER_LEVEL_PIN) != 0)
+            if (digitalRead(WATER_LEVEL_PIN) != 0) // check the water level
                 {
                     digitalWrite(actuator, HIGH);
                     cout << "Pump is ON\n";
                     mqttPublishDIO(topic_status_pump, PUMP_PIN);
                     mode = "watering";
-                    timerAlarmEnable(watering_countdown);
+                    timerStart(watering_countdown);
                 }
             else
                 {
@@ -102,5 +112,9 @@ void relay_control(int actuator, statusONOFF status)
                 digitalWrite(actuator, status);
                 mqttflow_telemetrySend();
             }
+    }
+    else 
+    {
+        digitalWrite(actuator, LOW);
     }
 }
