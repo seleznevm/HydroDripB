@@ -17,10 +17,10 @@
 DHTesp dht;
 enum statusONOFF {OFF, ON};
 enum EEPROM_enum{start_hour = 2, stop_hour = 4, lightON_hour = 6, lightOFF_hour = 8};
-const char* WIFI_SSID = "SMA";
-const char* WIFI_PASSWORD = "ipc2320207";
-// const char* WIFI_SSID = "MiKate2";
-// const char* WIFI_PASSWORD = "yaslujukate";
+// const char* WIFI_SSID = "SMA";
+// const char* WIFI_PASSWORD = "ipc2320207";
+const char* WIFI_SSID = "MiKate2";
+const char* WIFI_PASSWORD = "yaslujukate";
 const char* ntpServer = "pool.ntp.org";
 const long gmtOffset_sec = 10800;
 const int daylightOffset_sec = 0;
@@ -39,16 +39,17 @@ int mqttflow_getAppSettings();
 void displayInitialInfo(TempAndHumidity &environment);
 int watering();
 void timerSetup();
+void lightControl();
 //
 programm current_set;
 programm default_set 
     {
         .drip_start_h = 7,
-        .drip_stop_h = 24,
+        .drip_stop_h = 23,
         .lightON_h = 6,
         .lightOFF_h = 22,
-        .pumpONtime_m = 1,
-        .pumpOFFtime_m = 1
+        .pumpONtime_m = 15,
+        .pumpOFFtime_m = 30
     };
 Adafruit_SSD1306 display(128, 32, &Wire, -1);
 struct tm timeinfo;
@@ -111,8 +112,10 @@ void setup()
 
 void loop()
 {
+    LocalTime();
     mqttflow_telemetrySend();
     watering();
+    lightControl();
     displayInitialInfo(environment);
 }
 
